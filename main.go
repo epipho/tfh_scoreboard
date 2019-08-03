@@ -6,6 +6,9 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+
+	"github.com/epipho/tfh_scoreboard/api/admin"
+	"github.com/epipho/tfh_scoreboard/scorer"
 )
 
 func main() {
@@ -16,22 +19,24 @@ func main() {
 		log.Fatalf("api key (-k) must be set")
 	}
 
+	sc := scorer.NewInMemoryScorer(nil, nil)
+
 	e := echo.New()
 
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
-	admin := e.Group("/admin", middleware.KeyAuth(func(k string, c echo.Context) (bool, error) {
+	ag := e.Group("/admin", middleware.KeyAuth(func(k string, c echo.Context) (bool, error) {
 		return k == *key, nil
 	}))
 
-	admin.POST("/score", nil)       // start creating a score (and switch display)
-	admin.POST("/score/:id", nil)   // update or complete a pending score
-	admin.DELETE("/score/:id", nil) // cancel a score update
+	ag.POST("/score", admin.CreateScore(sc))       // start creating a score (and switch display)
+	ag.POST("/score/:id", admin.UpdateScore(sc))   // update or complete a pending score
+	ag.DELETE("/score/:id", admin.DeleteScore(sc)) // cancel a score update
 
-	e.GET("/", nil)       // main page
-	e.GET("/scores/:cls") // scores for a specific class
-	e.GET("/live", nil)   // live updates for switching pages and updating
+	e.GET("/", nil)            // main page
+	e.GET("/scores/:cls", nil) // scores for a specific class
+	e.GET("/live", nil)        // live updates for switching pages and updating
 
 	e.Logger.Fatal(e.Start(":8080"))
 }
