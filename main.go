@@ -7,6 +7,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 
+	"github.com/epipho/tfh_scoreboard/api"
 	"github.com/epipho/tfh_scoreboard/api/admin"
 	"github.com/epipho/tfh_scoreboard/scorer"
 )
@@ -34,9 +35,9 @@ func main() {
 	ag.POST("/score/:id", admin.UpdateScore(sc))   // update or complete a pending score
 	ag.DELETE("/score/:id", admin.DeleteScore(sc)) // cancel a score update
 
-	e.GET("/", nil)            // main page
-	e.GET("/scores/:cls", nil) // scores for a specific class
-	e.GET("/live", nil)        // live updates for switching pages and updating
+	e.GET("/", api.Index())                // main page
+	e.GET("/scores/:cls", api.GetScores()) // scores for a specific class
+	e.GET("/live", api.Live())             // live updates for switching pages and updating
 
 	e.Logger.Fatal(e.Start(":8080"))
 }
