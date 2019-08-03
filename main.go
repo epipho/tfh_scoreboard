@@ -9,18 +9,27 @@ import (
 
 	"github.com/epipho/tfh_scoreboard/api"
 	"github.com/epipho/tfh_scoreboard/api/admin"
+	"github.com/epipho/tfh_scoreboard/db"
 	"github.com/epipho/tfh_scoreboard/scorer"
 )
 
 func main() {
 	key := flag.String("k", "", "API Key for admin endpoints")
+	dbf := flag.String("d", "scores.sqlite3", "Scores database sqlite file")
 	flag.Parse()
 
 	if len(*key) == 0 {
 		log.Fatalf("api key (-k) must be set")
 	}
 
-	sc := scorer.NewInMemoryScorer(nil, nil)
+	// create db
+	db, err := db.NewSQLiteDB(*dbf)
+	if err != nil {
+		log.Fatalf("Unable to create scores db: %v", err)
+	}
+	_ = db
+
+	sc := scorer.NewInMemoryScorer(db, nil)
 
 	e := echo.New()
 
