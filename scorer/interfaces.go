@@ -8,6 +8,6 @@ type Storage interface {
 
 type Notifier interface {
 	Started(name string, class string, ranks []float32)
-	Updated(name string, score float32)
-	Finalized(name string)
+	Updated(score float32)
+	Finalized()
 }
