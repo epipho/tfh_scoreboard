@@ -2,7 +2,7 @@ package scorer
 
 type Storage interface {
 	CreateOrUpdateUser(name string, email *string) error
-	UpdateScore(name string, class string, score float32, incremental bool, replace bool) error
+	UpdateScore(name string, class string, score float32, replace bool) error
 	GetAllScores(class string) error
 }
 

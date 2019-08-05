@@ -10,10 +10,9 @@ import (
 type UpdateScoreRequest struct {
 	Name string `json:"name"`
 	// if score is set, the score will be immediatly updated and finalized
-	Score       *float32 `json:"score",omitempty`
-	Incremental bool     `json:"incremental"` //incrementall add to score
-	Replace     bool     `json:"replace"`     // replace current score (even if not higher)
-	Finalize    bool     `json:"finalize"`    // last score update, write to db
+	Score    *float32 `json:"score",omitempty`
+	Replace  bool     `json:"replace"`  // replace current score (even if not higher)
+	Finalize bool     `json:"finalize"` // last score update, write to db
 }
 
 func UpdateScore(s Scorer) func(c echo.Context) error {
@@ -25,7 +24,7 @@ func UpdateScore(s Scorer) func(c echo.Context) error {
 
 		id := c.Param("id")
 		if r.Score != nil {
-			if err := s.Update(id, *r.Score, r.Incremental); err != nil {
+			if err := s.Update(id, *r.Score); err != nil {
 				return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("Unable to update score: %v", err))
 			}
 		}

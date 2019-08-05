@@ -30,7 +30,7 @@ func CreateScore(s Scorer) func(c echo.Context) error {
 		}
 
 		if r.Score != nil {
-			if err := s.Update(id, *r.Score, r.Incremental); err != nil {
+			if err := s.Update(id, *r.Score); err != nil {
 				return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("Unable to update score: %v", err))
 			}
 			if err := s.Finalize(id, r.Replace); err != nil {

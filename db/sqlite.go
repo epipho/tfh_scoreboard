@@ -96,21 +96,15 @@ func (db *SQLite) CreateOrUpdateUser(name string, email *string) error {
 	return nil
 }
 
-func (db *SQLite) UpdateScore(name string, class string, score float32, incremental bool, replace bool) error {
+func (db *SQLite) UpdateScore(name string, class string, score float32, replace bool) error {
 	ins := "INSERT INTO scores (name, class, score) VALUES (?, ?, ?)"
 	att := "INSERT INTO attempts (name, class, score) VALUES (?, ?, ?)"
 	upd_max := "UPDATE scores SET score = max(score, ?), updated_at = datetime('now') WHERE name = ? AND class = ?"
 	upd_replace := "UPDATE scores SET score = ?, updated_at = datetime('now') WHERE name = ? AND class = ?"
-	upd_inc := "UPDATE scores SET score = score + ?, updated_at = datetime('now') WHERE name = ? and class = ?"
 
 	var res sql.Result
 	var err error
-	if incremental {
-		res, err = db.db.Exec(upd_inc, score, name, class)
-		if err != nil {
-			return err
-		}
-	} else if replace {
+	if replace {
 		res, err = db.db.Exec(upd_replace, score, name, class)
 		if err != nil {
 			return err

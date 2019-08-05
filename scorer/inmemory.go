@@ -9,10 +9,9 @@ import (
 )
 
 type score struct {
-	name        string
-	class       string
-	val         float32
-	incremental bool
+	name  string
+	class string
+	val   float32
 }
 
 type InMemoryScorer struct {
@@ -50,26 +49,15 @@ func (s *InMemoryScorer) Create(name string, email *string, class string) (strin
 	return id, nil
 }
 
-func (s *InMemoryScorer) Update(id string, score float32, incremental bool) error {
+func (s *InMemoryScorer) Update(id string, score float32) error {
 	s.lock.Lock()
 	defer s.lock.Unlock()
 	cur, ok := s.partialScores[id]
 	if !ok {
 		return errors.New("Invalid score id")
 	}
-	if incremental {
-		if cur.val == -math.MaxFloat32 {
-			cur.val = 0
-		}
-		cur.val += score
-		cur.incremental = true
-		s.partialScores[id] = cur
-	} else {
-		if cur.val < score {
-			cur.val = score
-			s.partialScores[id] = cur
-		}
-	}
+	cur.val = score
+	s.partialScores[id] = cur
 
 	return nil
 }
@@ -82,7 +70,7 @@ func (s *InMemoryScorer) Finalize(id string, replace bool) error {
 	if score.val == -math.MaxFloat32 {
 		return errors.New("Score was never set")
 	}
-	err := s.storage.UpdateScore(score.name, score.class, score.val, score.incremental, replace)
+	err := s.storage.UpdateScore(score.name, score.class, score.val, replace)
 	if err != nil {
 		return err
 	}
