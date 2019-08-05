@@ -132,10 +132,56 @@ func (db *SQLite) UpdateScore(name string, class string, score float32, replace 
 	return nil
 }
 
+type score struct {
+	name     string
+	score    float32
+	attempts int
+}
+
+func (s *score) Name() string {
+	return s.name
+}
+
+func (s *score) Score() float32 {
+	return s.score
+}
+
+func (s *score) Attempts() int {
+	return s.attempts
+}
+
 func (db *SQLite) GetAllScores(class string) ([]interface {
+	Name() string
 	Score() float32
 	Attempts() int
 }, error) {
+	get := "SELECT name, score, (SELECT count(1) FROM attempts a WHERE a.name = s.name AND class = ?) FROM scores s WHERE class = ? ORDER BY score DESC, updated_at ASC"
 
-	return nil, nil
+	rows, err := db.db.Query(get, class, class)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	scores := []score{}
+	for rows.Next() {
+		s := score{}
+		err = rows.Scan(&s.name, &s.score, &s.attempts)
+		if err != nil {
+			return nil, err
+		}
+		scores = append(scores, s)
+	}
+
+	ret := make([]interface {
+		Name() string
+		Score() float32
+		Attempts() int
+	}, len(scores))
+
+	for i := range scores {
+		ret[i] = &scores[i]
+	}
+
+	return ret, nil
 }

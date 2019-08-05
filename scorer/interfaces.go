@@ -4,6 +4,7 @@ type Storage interface {
 	CreateOrUpdateUser(name string, email *string) error
 	UpdateScore(name string, class string, score float32, replace bool) error
 	GetAllScores(class string) ([]interface {
+		Name() string
 		Score() float32
 		Attempts() int
 	}, error)
