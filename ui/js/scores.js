@@ -71,17 +71,27 @@ function connect() {
 }
 
 function live_started(json) {
+    console.log("Started: "+JSON.stringify(json))
     live = document.getElementById("live")
     scores = document.getElementById("scores")
 
     scores.style.display = "none"
     live.style.display = "block"
+
+    nm = document.getElementById("live_name")
+    nm.innerText = json.name
+
+    cls = document.getElementById("live_class")
+    cls.innerText = json.class
+
 }
 
 function live_updated(json) {
+    console.log("Updated: "+JSON.stringify(json))
 }
 
 function live_finalized(json) {
+    console.log("Finalized: "+JSON.stringify(json))
     live = document.getElementById("live")
     scores = document.getElementById("scores")
 
