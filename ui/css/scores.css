@@ -79,3 +79,8 @@ body {
     font-size: 18px;
     font-weight: bold;
 }
+
+#live {
+    background-color: blue;
+    display: none;
+}

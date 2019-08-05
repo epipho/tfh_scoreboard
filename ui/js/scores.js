@@ -1,6 +1,9 @@
-window.onload = refreshScores()
+window.onload = function() {
+    refresh_scores()
+    connect()
+}
 
-function refreshScores() {
+function refresh_scores() {
     const scores = ["classic", "unlimited"]
     scores.forEach(item => fetch("scores/" + item)
 		   .then(function(resp) {
@@ -32,4 +35,58 @@ function update_scores(item, json) {
 	r.querySelector(".attempts").innerText = s.attempts
 	c.appendChild(r)
     })
+}
+
+function connect() {
+    ws = new WebSocket("ws://" + location.host + "/live")
+    ws.onopen = function(e) {
+	console.log("Websocket connected")
+    }
+
+    ws.onmessage = function(e) {
+	json = JSON.parse(e.data)
+	if (json.id === "started") {
+	    live_started(json)
+	}
+	else if (json.id === "updated") {
+	    live_updated(json)
+	} else if (json.id === "finalized") {
+	    live_finalized(json)
+	} else {
+	    console.log("Unknown websocket message: ", json)
+	}
+    }
+
+    ws.onclose = function(e) {
+	console.log("Lost connection, reconnecting in 1 second: ", e.reason)
+	setTimeout(function() {
+	    connect()
+	}, 1000);
+    }
+
+    ws.onerror = function(e) {
+	console.error("Websocket error: ", e)
+	ws.close()
+    }
+}
+
+function live_started(json) {
+    live = document.getElementById("live")
+    scores = document.getElementById("scores")
+
+    scores.style.display = "none"
+    live.style.display = "block"
+}
+
+function live_updated(json) {
+}
+
+function live_finalized(json) {
+    live = document.getElementById("live")
+    scores = document.getElementById("scores")
+
+    scores.style.display = "block"
+    live.style.display = "none"
+
+    refresh_scores()
 }
