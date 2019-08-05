@@ -2,6 +2,7 @@
   <head>
     <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet" />
     <link href="css/scores.css" rel="stylesheet" />
+    <script src="js/scores.js"></script>
   </head>
   <body>
     <div id="scores" class="container">
@@ -9,47 +10,36 @@
         <div class="score_header">
 	  Classic
         </div>
-        <div class="score_body">
+        <div id="classic" class="score_body">
 	  <div class="row hdr">
 	    <div class="col rank">RANK</div>
 	    <div class="col name">NAME</div>
 	    <div class="col score">SCORE</div>
 	    <div class="col attempts">ATTEMPTS</div>
 	    </div>
-	  <div class="row">
-	    <div class="col rank">1</div>
-	    <div class="col name">abc</div>
-	    <div class="col score">100</div>
-	    <div class="col attempts">10</div>
-          </div>
-	  <div class="row">
-	    <div class="col rank">2</div>
-	    <div class="col name">abc</div>
-	    <div class="col score">100</div>
-	    <div class="col attempts">10</div>
-          </div>
         </div>
       </div>
       <div class="split right">
         <div class="score_header">
   	  Unlimited
         </div>
-        <div class="score_body">
+        <div id="unlimited" class="score_body">
 	  <div class="row hdr">
 	    <div class="col rank">RANK</div>
 	    <div class="col name">NAME</div>
 	    <div class="col score">SCORE</div>
 	    <div class="col attempts">ATTEMPTS</div>
-	    </div>
-	  <div class="row">
-	    <div class="col rank">1</div>
-	    <div class="col name">abc</div>
-	    <div class="col score">100</div>
-	    <div class="col attempts">10</div>
           </div>
         </div>
       </div>
     </div>
-    <div id="
   </body>
 </html>
+<template id="score">
+  <div class="row">
+    <div class="col rank"></div>
+    <div class="col name"></div>
+    <div class="col score"></div>
+    <div class="col attempts"></div>
+  </div>
+</template>

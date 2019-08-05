@@ -2,6 +2,7 @@ package db
 
 import (
 	"database/sql"
+	"fmt"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -101,6 +102,8 @@ func (db *SQLite) UpdateScore(name string, class string, score float32, replace 
 	att := "INSERT INTO attempts (name, class, score) VALUES (?, ?, ?)"
 	upd_max := "UPDATE scores SET score = max(score, ?), updated_at = datetime('now') WHERE name = ? AND class = ?"
 	upd_replace := "UPDATE scores SET score = ?, updated_at = datetime('now') WHERE name = ? AND class = ?"
+
+	fmt.Printf("HELLO!!\n")
 
 	var res sql.Result
 	var err error
