@@ -44,9 +44,11 @@ func main() {
 	ag.POST("/score/:id", admin.UpdateScore(sc))   // update or complete a pending score
 	ag.DELETE("/score/:id", admin.DeleteScore(sc)) // cancel a score update
 
-	e.GET("/", api.Index())                // main page
 	e.GET("/scores/:cls", api.GetScores()) // scores for a specific class
 	e.GET("/live", api.Live())             // live updates for switching pages and updating
+
+	// static assets
+	e.Static("/", "ui")
 
 	e.Logger.Fatal(e.Start(":8080"))
 }
