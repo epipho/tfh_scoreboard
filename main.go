@@ -27,9 +27,12 @@ func main() {
 	if err != nil {
 		log.Fatalf("Unable to create scores db: %v", err)
 	}
-	_ = db
 
-	sc := scorer.NewInMemoryScorer(db, nil)
+	// broadcaster for live updates
+	b := api.NewBroadcaster()
+	_ = b
+
+	sc := scorer.NewInMemoryScorer(db, b)
 
 	e := echo.New()
 
@@ -45,7 +48,7 @@ func main() {
 	ag.DELETE("/score/:id", admin.DeleteScore(sc)) // cancel a score update
 
 	e.GET("/scores/:cls", api.GetScores(db)) // scores for a specific class
-	e.GET("/live", api.Live())               // live updates for switching pages and updating
+	e.GET("/live", api.Live(b))              // live updates for switching pages and updating
 
 	// static assets
 	e.Static("/", "ui")

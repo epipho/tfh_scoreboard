@@ -46,6 +46,25 @@ func (s *InMemoryScorer) Create(name string, email *string, class string) (strin
 		class: class,
 	}
 
+	// retrieve current scores
+	scores, err := s.storage.GetAllScores(class)
+	if err != nil {
+		return "", err
+	}
+
+	cur_rank := -1
+	ranks := make([]float32, len(scores))
+	for i, v := range scores {
+		ranks[i] = v.Score()
+		if v.Name() == name {
+			cur_rank = i
+		}
+	}
+
+	if s.notifier != nil {
+		s.notifier.Started(name, class, cur_rank, ranks)
+	}
+
 	return id, nil
 }
 
@@ -58,6 +77,10 @@ func (s *InMemoryScorer) Update(id string, score float32) error {
 	}
 	cur.val = score
 	s.partialScores[id] = cur
+
+	if s.notifier != nil {
+		s.notifier.Updated(score)
+	}
 
 	return nil
 }
@@ -81,5 +104,10 @@ func (s *InMemoryScorer) Finalize(id string, replace bool) error {
 
 func (s *InMemoryScorer) Cancel(id string) error {
 	delete(s.partialScores, id)
+
+	if s.notifier != nil {
+		s.notifier.Finalized()
+	}
+
 	return nil
 }

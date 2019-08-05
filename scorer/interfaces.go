@@ -11,7 +11,7 @@ type Storage interface {
 }
 
 type Notifier interface {
-	Started(name string, class string, ranks []float32)
+	Started(name string, class string, cur_rank int, ranks []float32)
 	Updated(score float32)
 	Finalized()
 }
