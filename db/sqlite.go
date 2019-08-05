@@ -132,6 +132,10 @@ func (db *SQLite) UpdateScore(name string, class string, score float32, replace 
 	return nil
 }
 
-func (db *SQLite) GetAllScores(class string) error {
-	return nil
+func (db *SQLite) GetAllScores(class string) ([]interface {
+	Score() float32
+	Attempts() int
+}, error) {
+
+	return nil, nil
 }
