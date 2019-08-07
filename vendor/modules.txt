@@ -24,6 +24,7 @@ github.com/valyala/fasttemplate
 golang.org/x/crypto/acme
 golang.org/x/crypto/acme/autocert
 # golang.org/x/net v0.0.0-20190607181551-461777fb6f67
+golang.org/x/net/websocket
 golang.org/x/net/idna
 # golang.org/x/sys v0.0.0-20190609082536-301114b31cce
 golang.org/x/sys/unix
