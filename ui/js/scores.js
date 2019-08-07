@@ -155,7 +155,7 @@ window.onload = function() {
 
 function refresh_scores() {
     const scores = ["classic", "unlimited"]
-    scores.forEach(item => fetch("scores/" + item)
+    scores.forEach(item => fetch("tfh/scores/" + item)
 		   .then(function(resp) {
 		       return resp.json()
 		   })
