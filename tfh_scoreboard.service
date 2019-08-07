@@ -1,0 +1,14 @@
+[Unit]
+Description=Tinfoil Hat Service
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+WorkingDirectory=/opt/tfh_scoreboard
+ExecStart=/opt/tfh_scoreboard/tfh_scoreboard -k {{API_KEY}} -d /var/lib/tfh_scoreboard/scores.sqlite3
+
+[Install]
+WantedBy=multi-user.target
