@@ -188,7 +188,7 @@ function update_scores(item, json) {
 }
 
 function connect() {
-    ws = new WebSocket("ws://" + location.host + "/live")
+    ws = new WebSocket("wss://" + location.host + "/tfh/live")
     ws.onopen = function(e) {
 	console.log("Websocket connected")
     }
