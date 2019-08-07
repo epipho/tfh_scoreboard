@@ -2,6 +2,7 @@
   <head>
     <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet" />
     <link href="css/scores.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
     <script src="js/scores.js"></script>
   </head>
   <body>
@@ -38,6 +39,55 @@
 	<div id="live_name" class="live_col"></div>
 	<div id="live_static" class="live_col">Analyzing</div>
 	<div id="live_class" class="live_col"></div>
+      </div>
+      <div class="live_body">
+	<div id="graph">
+	  <canvas id="graphc"></canvas>
+	</div>
+	<div class="stats">
+	  <div class="stat_col">
+	    <div class="stat_header">Current Rank</div>
+	    <div class="stat_value">
+	      <div class="stat_val_split">
+  		<div id="cur_rank" class="stat_val_part">1</div>
+	      </div>
+	      <div class="stat_val_split">
+		<div id="cur_score" class="stat_val_part">2</div>
+	      </div>
+	    </div>
+	    <div id="cur_graph" class="stat_graph">
+	      <canvas id="cur_graph_c"></canvas>
+	    </div>
+	  </div>
+	  <div class="stat_col">
+	    <div class="stat_header">Next Rank</div>
+	    <div class="stat_value">
+	      <div class="stat_val_split">
+  		<div id="next_rank" class="stat_val_part">1</div>
+	      </div>
+	      <div class="stat_val_split">
+		<div id="next_score" class="stat_val_part">2</div>
+	      </div>
+	    </div>
+	    <div id="next_graph" class="stat_graph">
+	      <canvas id="next_graph_c"></canvas>
+	    </div>
+	  </div>
+	  <div class="stat_col">
+	    <div class="stat_header">Highest Rank</div>
+	    <div class="stat_value">
+	      <div class="stat_val_split">
+  		<div id="max_rank" class="stat_val_part">1</div>
+	      </div>
+	      <div class="stat_val_split">
+		<div id="max_score" class="stat_val_part">2</div>
+	      </div>
+	    </div>
+	    <div id="max_graph" class="stat_graph">
+	      <canvas id="max_graph_c"></canvas>
+	    </div>
+	  </div>
+	</div>
       </div>
     </div>
   </body>

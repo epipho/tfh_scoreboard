@@ -1,6 +1,156 @@
 window.onload = function() {
     refresh_scores()
     connect()
+
+    ctx = document.getElementById('graphc').getContext('2d');
+    window.graph = new Chart(ctx, {
+	// The type of chart we want to create
+	type: 'bar',
+
+	// The data for our dataset
+	data: {
+	    datasets: [{
+		backgroundColor: '#616161',
+		borderColor: '#9e9e9e',
+	    }]
+	},
+
+	// Configuration options go here
+	options: {
+	    legend: {
+		display: false,
+	    },
+	    responsive: true,
+	    maintainAspectRatio: false,
+	    scales: {
+		yAxes: [{
+		    ticks: {
+			beginAtZero: true,
+			suggestedMax: 50,
+		    }
+		}],
+		xAxes: [{
+		    gridLines: {
+			display: false
+		    }
+		}],
+	    },
+	}
+    });
+
+    ctx = document.getElementById('cur_graph_c').getContext('2d');
+    window.cur_graph = new Chart(ctx, {
+	// The type of chart we want to create
+	type: 'bar',
+
+	// The data for our dataset
+	data: {
+	    labels: [""],
+
+	    datasets: [{
+		backgroundColor: '#616161',
+		borderColor: '#9e9e9e',
+	    }]
+	},
+
+	// Configuration options go here
+	options: {
+	    legend: {
+		display: false,
+	    },
+	    responsive: true,
+	    maintainAspectRatio: false,
+	    scales: {
+		yAxes: [{
+		    ticks: {
+			beginAtZero: true,
+			suggestedMax: 10,
+			suggestedMin: -10
+		    }
+		}],
+		xAxes: [{
+		    gridLines: {
+			display: false
+		    }
+		}],
+	    },
+	}
+    });
+
+    ctx = document.getElementById('next_graph_c').getContext('2d');
+    window.next_graph = new Chart(ctx, {
+	// The type of chart we want to create
+	type: 'bar',
+
+	// The data for our dataset
+	data: {
+	    datasets: [{
+		backgroundColor: '#616161',
+		borderColor: '#9e9e9e',
+	    }]
+	},
+
+	// Configuration options go here
+	options: {
+	    legend: {
+		display: false,
+	    },
+	    responsive: true,
+	    maintainAspectRatio: false,
+	    scales: {
+		yAxes: [{
+		    ticks: {
+			beginAtZero: true,
+			suggestedMax: 10,
+			suggestedMin: -10
+		    }
+		}],
+		xAxes: [{
+		    gridLines: {
+			display: false
+		    }
+		}],
+	    },
+	}
+    });
+
+    ctx = document.getElementById('max_graph_c').getContext('2d');
+    window.max_graph = new Chart(ctx, {
+	// The type of chart we want to create
+	type: 'bar',
+
+	// The data for our dataset
+	data: {
+	    labels: [""],
+	    datasets: [{
+		backgroundColor: '#616161',
+		borderColor: '#9e9e9e',
+	    }]
+	},
+
+	// Configuration options go here
+	options: {
+	    legend: {
+		display: false,
+	    },
+	    responsive: true,
+	    maintainAspectRatio: false,
+	    scales: {
+		yAxes: [{
+		    ticks: {
+			beginAtZero: true,
+			suggestedMax: 10,
+			suggestedMin: -10
+		    }
+		}],
+		xAxes: [{
+		    gridLines: {
+			display: false
+		    }
+		}],
+	    },
+	}
+    });
 }
 
 function refresh_scores() {
@@ -51,7 +201,7 @@ function connect() {
 	else if (json.id === "updated") {
 	    live_updated(json)
 	} else if (json.id === "finalized") {
-	    live_finalized(json)
+	    setTimeout(function() { live_finalized(json) }, 5000)
 	} else {
 	    console.log("Unknown websocket message: ", json)
 	}
@@ -84,9 +234,87 @@ function live_started(json) {
     cls = document.getElementById("live_class")
     cls.innerText = json.class
 
+    s = document.getElementById("live_static")
+
+    parent = document.getElementById("graph");
+    ctx = document.getElementById('graphc').getContext('2d');
+
+    ctx.width = parent.clientWidth;
+    ctx.height = parent.clientHeight;
+
+    window.graph.data.labels = []
+    window.graph.data.datasets[0].data = []
+
+    cur_rank = "None"
+    cur_score = "None"
+    window.cur_score = 0
+    if (json.cur_rank >= 0) {
+	cur_rank = json.cur_rank + 1
+	cur_score = json.ranks[json.cur_rank]
+	cur_score = Math.round(cur_score * 1000) / 1000
+        window.cur_score = cur_score
+    }
+    document.getElementById("cur_rank").innerText = cur_rank
+    document.getElementById("cur_score").innerText = cur_score
+
+    // set up graph
+    parent = document.getElementById("cur_graph");
+    ctx = document.getElementById('cur_graph_c').getContext('2d');
+
+    ctx.width = parent.clientWidth;
+    ctx.height = parent.clientHeight;
+
+    window.graph.data.labels = []
+    window.graph.data.datasets[0].data = []
+
+    next_rank = "None"
+    next_score = "None"
+    window.next_score = 0
+    if (json.cur_rank >= 0) {
+	next_rank = Math.max(json.cur_rank, 1)
+	next_score = json.ranks[Math.max(json.cur_rank-1, 0)]
+	next_score = Math.round(next_score * 1000) / 1000
+        window.next_score = next_score
+    }
+    document.getElementById("next_rank").innerText = next_rank
+    document.getElementById("next_score").innerText = next_score
+
+    max_score = "None"
+    window.max_score = 0
+    if (json.ranks.length > 0) {
+	max_score = json.ranks[0]
+	max_score = Math.round(max_score * 1000) / 1000
+        window.max_score = max_score
+    }
+    document.getElementById("max_rank").innerText = "1"
+    document.getElementById("max_score").innerText = max_score
+
+    window.max_score = max_score
 }
 
 function live_updated(json) {
+    window.graph.data.labels.push("")
+    window.graph.data.datasets[0].data.push(json.score)
+    window.graph.update()
+
+    red = "#810000"
+    green = "#008100"
+
+    cur_diff = json.score - window.cur_score
+    window.cur_graph.data.datasets[0].data = [cur_diff]
+    window.cur_graph.data.datasets[0].backgroundColor = cur_diff > 0 ? green : red
+    window.cur_graph.update()
+
+    next_diff = json.score - window.next_score
+    window.next_graph.data.datasets[0].data = [next_diff]
+    window.next_graph.data.datasets[0].backgroundColor = next_diff > 0 ? green : red
+    window.next_graph.update()
+
+    max_diff = json.score - window.max_score
+    window.max_graph.data.datasets[0].data = [max_diff]
+    window.max_graph.data.datasets[0].backgroundColor = max_diff > 0 ? green : red
+    window.max_graph.update()
+
     console.log("Updated: "+JSON.stringify(json))
 }
 
